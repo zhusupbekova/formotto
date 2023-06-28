@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { SiteHeader } from "@/components/layout/header";
 import { Metadata } from "next";
 import { SiteFooter } from "@/components/layout/footer";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 
 const inter = Inter({ subsets: ["latin"] });
 

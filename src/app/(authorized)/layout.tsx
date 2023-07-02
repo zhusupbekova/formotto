@@ -1,10 +1,10 @@
-import "./globals.css";
 import { Inter } from "next/font/google";
-import { cn } from "@/base/utils";
 import { siteConfig } from "@/config/site";
+import { SiteHeader } from "@/components/layout/header";
 import { Metadata } from "next";
-
-import { Providers } from "@/app/providers";
+import { SiteFooter } from "@/components/layout/footer";
+import { getSession } from "@/base/authOptions";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -63,16 +63,24 @@ export const metadata: Metadata = {
   manifest: `${siteConfig.url}/site.webmanifest`,
 };
 
-export default function RootLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
+  if (!session) {
+    redirect("/auth/login");
+  }
+
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={cn("min-h-screen bg-background font-sans antialiased")}>
-        <Providers>{children}</Providers>
-      </body>
-    </html>
+    <div className="relative flex min-h-screen flex-col">
+      <div className="flex-1">
+        <SiteHeader />
+        {children}
+      </div>
+      <SiteFooter />
+    </div>
   );
 }

@@ -25,7 +25,7 @@ export function FormsList() {
   return (
     <div className="w-full flex flex-col space-y-6 pt-12 items-center">
       {data &&
-        data.forms.map((formItem) => (
+        data.forms?.map((formItem) => (
           <FormCard formItem={formItem} key={formItem.id} />
         ))}
 

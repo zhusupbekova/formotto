@@ -41,7 +41,7 @@ export function FormCard({ formItem }: { formItem: IForm }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { trigger, isMutating } = useSWRMutation(
-    `/api/forms/${formItem.id}`,
+    `/api/forms?formId=${formItem.id}`,
     deleter
   );
   const { mutate } = useSWRConfig();
@@ -80,12 +80,7 @@ export function FormCard({ formItem }: { formItem: IForm }) {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={loading}>
-                {loading && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                )}
-                Cancel
-              </AlertDialogCancel>
+              <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
 
               <AlertDialogAction
                 onClick={(e) => {

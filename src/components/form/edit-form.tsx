@@ -17,23 +17,33 @@ import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import * as React from "react";
 import useSWRMutation from "swr/mutation";
-import { poster } from "@/base/network";
+import { fetcher, poster } from "@/base/network";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import useSWR from "swr";
+import { IForm } from "@/base/types";
 
 const formSchema = z.object({
   name: z.string({
     required_error: "Please enter a name for form.",
   }),
-  redirect_url: z.string().url().optional(),
+  redirect_url: z.string().optional(),
   emails: z.string().optional(),
 });
 
 type formValues = z.infer<typeof formSchema>;
 
-export function NewForm() {
+export function EditForm({ formId }: { formId: string }) {
   const router = useRouter();
-  const { trigger, isMutating } = useSWRMutation("/api/forms", poster);
+  const {
+    data: formData,
+    error,
+    isLoading,
+  } = useSWR<{ form: IForm }>(`/api/forms?formId=${formId}`, fetcher);
+  const { trigger, isMutating } = useSWRMutation(
+    `/api/forms?formId=${formId}`,
+    poster
+  );
 
   // gives error <z.infer<typeof formSchema>
   // const form = useForm<z.infer<typeof formSchema>>({
@@ -41,9 +51,9 @@ export function NewForm() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      emails: "",
-      redirect_url: undefined,
+      name: formData?.form.name,
+      emails: formData?.form.emails.join(", "),
+      redirect_url: formData?.form.redirect_url,
     },
   });
 

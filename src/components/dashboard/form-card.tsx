@@ -1,7 +1,17 @@
 "use client";
 
 import { ActionButton, CopyButton } from "@/components/action-button";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   Card,
   CardContent,
@@ -11,8 +21,7 @@ import {
 } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { cn } from "@/base/utils";
-import { IFormItem } from "@/base/types";
+import { IForm } from "@/base/types";
 
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,14 +31,29 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import * as React from "react";
+import Link from "next/link";
+import useSWRMutation from "swr/mutation";
+import { deleter } from "@/base/network";
+import { useState } from "react";
+import { useSWRConfig } from "swr";
 
-export function FormCard({ formItem }: { formItem: IFormItem }) {
+export function FormCard({ formItem }: { formItem: IForm }) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { trigger, isMutating } = useSWRMutation(
+    `/api/forms?formId=${formItem.id}`,
+    deleter
+  );
+  const { mutate } = useSWRConfig();
+
   const formEndpointUrl = `https://formotto/submit/${formItem.id}`;
+
   return (
-    // <TooltipProvider>
     <Card className="relative w-full flex justify-between">
       <CardHeader>
-        <CardTitle>{formItem.name}</CardTitle>
+        <Link href={`/form/view?id=${formItem.id}`} className="cursor-pointer">
+          <CardTitle>{formItem.name}</CardTitle>
+        </Link>
         <CardDescription className="flex items-center space-x-2">
           <span>{formEndpointUrl}</span> <CopyButton data={formEndpointUrl} />
         </CardDescription>
@@ -39,10 +63,40 @@ export function FormCard({ formItem }: { formItem: IFormItem }) {
           <Icons.edit className="h-4 w-4" />
           <span className="sr-only">Edit</span>
         </Button>
-        <Button variant="danger" size="icon">
-          <Icons.trash className="h-4 w-4" />
-          <span className="sr-only">Delete</span>
-        </Button>
+        <AlertDialog open={open} onOpenChange={setOpen}>
+          <AlertDialogTrigger
+            className={buttonVariants({ variant: "danger", size: "icon" })}
+          >
+            <Icons.trash className="h-4 w-4" />
+            <span className="sr-only">Delete</span>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action cannot be undone. This will permanently delete
+                <span className="font-bold mx-1">{formItem.name}</span>and
+                remove its data from our servers.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+
+              <AlertDialogAction
+                onClick={(e) => {
+                  onDelete(e);
+                }}
+                disabled={loading}
+                className={buttonVariants({ variant: "destructive" })}
+              >
+                {loading && (
+                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
       <CardContent className="pt-6 flex md:hidden items-center space-x-2">
         <DropdownMenu>
@@ -78,6 +132,23 @@ export function FormCard({ formItem }: { formItem: IFormItem }) {
         </Badge>
       )}
     </Card>
-    // </TooltipProvider>
   );
+
+  async function onDelete(e) {
+    try {
+      e.preventDefault();
+      setLoading(true);
+      console.log("deleting");
+
+      await trigger();
+      console.log("getting rest");
+
+      await mutate("/api/forms");
+      console.log("closings");
+      setLoading(false);
+      return setOpen(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }

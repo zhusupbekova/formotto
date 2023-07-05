@@ -75,4 +75,5 @@ model Submission {
   updated_at   DateTime @updatedAt
   form_id      String
   form         Form     @relation(fields: [form_id], references: [id])
+  fields       Json
 }

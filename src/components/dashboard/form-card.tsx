@@ -36,6 +36,7 @@ import useSWRMutation from "swr/mutation";
 import { deleter } from "@/base/network";
 import { useState } from "react";
 import { useSWRConfig } from "swr";
+import { DeleteFormButton } from "@/components/form/common/delete-form-button";
 
 export function FormCard({ formItem }: { formItem: IForm }) {
   const [open, setOpen] = useState(false);
@@ -63,40 +64,18 @@ export function FormCard({ formItem }: { formItem: IForm }) {
           <Icons.edit className="h-4 w-4" />
           <span className="sr-only">Edit</span>
         </Button>
-        <AlertDialog open={open} onOpenChange={setOpen}>
-          <AlertDialogTrigger
-            className={buttonVariants({ variant: "danger", size: "icon" })}
-          >
+        <DeleteFormButton
+          formName={formItem.name}
+          onDelete={onDelete}
+          open={open}
+          setOpen={setOpen}
+          loading={loading}
+        >
+          <Button variant="danger" size="icon">
             <Icons.trash className="h-4 w-4" />
             <span className="sr-only">Delete</span>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action cannot be undone. This will permanently delete
-                <span className="font-bold mx-1">{formItem.name}</span>and
-                remove its data from our servers.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-
-              <AlertDialogAction
-                onClick={(e) => {
-                  onDelete(e);
-                }}
-                disabled={loading}
-                className={buttonVariants({ variant: "destructive" })}
-              >
-                {loading && (
-                  <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                )}
-                Delete
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          </Button>
+        </DeleteFormButton>
       </CardContent>
       <CardContent className="pt-6 flex md:hidden items-center space-x-2">
         <DropdownMenu>

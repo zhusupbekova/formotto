@@ -1,21 +1,15 @@
-import Link from "next/link";
-
 import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 import { FormsList } from "@/components/dashboard/forms-list";
+import { TestForm } from "@/app/test/components/test-form";
 
-export default function DashboardPage() {
+export default function TestPage() {
   return (
     <main className="flex flex-col items-center justify-between px-4 lg:px-24 py-12">
       <div className="w-full flex items-center justify-between">
-        <div />
-        <Link
-          href="/form/new"
-          className={buttonVariants({ variant: "default" })}
-        >
-          Create new fom
-        </Link>
+        <h1 className="text-xl font-bold">Test form page</h1>
       </div>
-      <FormsList />
+      <TestForm />
     </main>
   );
 }

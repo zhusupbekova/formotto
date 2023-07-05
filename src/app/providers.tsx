@@ -1,20 +1,16 @@
 "use client";
 
-import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
-import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
+import posthog from "posthog-js";
+import { ThemeProvider } from "next-themes";
 import { SessionProvider } from "next-auth/react";
+import { PostHogProvider } from "posthog-js/react";
+import { usePathname, useSearchParams } from "next/navigation";
 
 if (typeof window !== "undefined" && process.env.NODE_ENV !== "development") {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
     api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    // loaded: (ph) => {
-    //     if (process.env.NODE_ENV === "development") {
-    //         ph.debug();
-    //     }
-    // },
   });
 }
 
@@ -41,11 +37,13 @@ function PHProvider({ children }: React.PropsWithChildren) {
 
 export function Providers({ children }: React.PropsWithChildren) {
   return (
-    <PHProvider>
-      <SessionProvider>
-        <Toaster />
-        {children}
-      </SessionProvider>
-    </PHProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <PHProvider>
+        <SessionProvider>
+          <Toaster />
+          {children}
+        </SessionProvider>
+      </PHProvider>
+    </ThemeProvider>
   );
 }

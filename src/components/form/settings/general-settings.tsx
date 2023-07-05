@@ -17,11 +17,15 @@ import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import * as React from "react";
 import useSWRMutation from "swr/mutation";
-import { fetcher, poster } from "@/base/network";
+import { deleter, fetcher, poster } from "@/base/network";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import useSWR from "swr";
 import { IForm } from "@/base/types";
+import { router } from "next/client";
+import { useState } from "react";
+import { DeleteFormButton } from "@/components/form/common/delete-form-button";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string({
@@ -33,29 +37,35 @@ const formSchema = z.object({
 
 type formValues = z.infer<typeof formSchema>;
 
-export function EditForm({ formId }: { formId: string }) {
+export function GeneralSettingsForm({ formId }: { formId: string }) {
+  const [open, setOpen] = useState(false);
   const router = useRouter();
   const {
     data: formData,
     error,
     isLoading,
   } = useSWR<{ form: IForm }>(`/api/forms?formId=${formId}`, fetcher);
-  const { trigger, isMutating } = useSWRMutation(
-    `/api/forms?formId=${formId}`,
-    poster
-  );
-
-  // gives error <z.infer<typeof formSchema>
-  // const form = useForm<z.infer<typeof formSchema>>({
+  const { trigger: triggerUpdate, isMutating: isMutatingUpdate } =
+    useSWRMutation(`/api/forms?formId=${formId}`, poster);
+  const { trigger: triggerDelete, isMutating: isMutatingDelete } =
+    useSWRMutation(`/api/forms?formId=${formId}`, deleter);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: formData?.form.name,
-      emails: formData?.form.emails.join(", "),
-      redirect_url: formData?.form.redirect_url,
+    values: {
+      name: formData?.form?.name || "",
+      emails: formData?.form?.emails.join(", ") || "",
+      redirect_url: formData?.form?.redirect_url || "",
     },
   });
+
+  if (isLoading) {
+    return (
+      <div>
+        <Icons.spinner className="w-10 h-10 mx-auto animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -121,12 +131,28 @@ export function EditForm({ formId }: { formId: string }) {
           )}
         />
 
-        <Button type="submit" disabled={isMutating}>
-          {isMutating && (
-            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          Create form
-        </Button>
+        <div className="flex justify-between">
+          <Button type="submit" disabled={isMutatingUpdate || isMutatingDelete}>
+            {isMutatingUpdate && (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            Save
+          </Button>
+          <DeleteFormButton
+            formName={formData?.form.name as string}
+            onDelete={onDelete}
+            open={open}
+            setOpen={setOpen}
+            loading={isMutatingDelete}
+          >
+            <Button disabled={isMutatingDelete} variant="destructive">
+              {isMutatingDelete && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Delete form
+            </Button>
+          </DeleteFormButton>
+        </div>
       </form>
     </Form>
   );
@@ -134,17 +160,29 @@ export function EditForm({ formId }: { formId: string }) {
   async function onSubmit(values: formValues) {
     try {
       const emails = values.emails ? values.emails?.trim().split(", ") : [];
-      const formData = await trigger({
+      const formData = await triggerUpdate({
         name: values.name,
         redirect_url: values.redirect_url,
         emails,
       });
+      toast.success("Form updated successfully");
       console.log({ formData });
-      router.push(`/dashboard`);
+      // router.push(`/dashboard`);
       //
     } catch (err) {
       console.log(err);
       //
+    }
+  }
+
+  async function onDelete(e) {
+    try {
+      e.preventDefault();
+      await triggerDelete();
+      router.push("/dashboard");
+      return setOpen(false);
+    } catch (err) {
+      console.log(err);
     }
   }
 }

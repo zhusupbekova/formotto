@@ -1,25 +1,27 @@
 "use client";
 
-import * as React from "react";
+// import * as React from "react";
+import { toast } from "sonner";
+import { capitalize } from "lodash";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { HTMLAttributes, SyntheticEvent, useState } from "react";
 
 import { cn } from "@/base/utils";
+
 import { Icons } from "@/components/icons";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useSearchParams } from "next/navigation";
-import { toast } from "sonner";
-import { signIn } from "next-auth/react";
-import { capitalize } from "lodash";
 
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
+interface UserAuthFormProps extends HTMLAttributes<HTMLDivElement> {
   type: "login" | "register";
 }
 
 export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  async function onSubmit(event: React.SyntheticEvent) {
+  async function onSubmit(event: SyntheticEvent) {
     event.preventDefault();
     setIsLoading(true);
 

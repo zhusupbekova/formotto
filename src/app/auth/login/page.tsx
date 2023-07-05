@@ -1,10 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { Command } from "lucide-react";
-
-import { cn } from "@/base/utils";
-import { buttonVariants } from "@/components/ui/button";
 import { UserAuthForm } from "@/app/auth/components/form";
 
 export const metadata: Metadata = {
@@ -26,24 +20,24 @@ export default function LoginPage() {
 
       <UserAuthForm type="login" />
 
-      {/*<p className="px-8 text-center text-sm text-muted-foreground">*/}
-      {/*  By clicking continue, you agree to our*/}
-      {/*  <br />*/}
-      {/*  <Link*/}
-      {/*    href="/terms"*/}
-      {/*    className="underline underline-offset-4 hover:text-primary"*/}
-      {/*  >*/}
-      {/*    Terms of Service*/}
-      {/*  </Link>{" "}*/}
-      {/*  and{" "}*/}
-      {/*  <Link*/}
-      {/*    href="/privacy"*/}
-      {/*    className="underline underline-offset-4 hover:text-primary"*/}
-      {/*  >*/}
-      {/*    Privacy Policy*/}
-      {/*  </Link>*/}
-      {/*  .*/}
-      {/*</p>*/}
+      <p className="px-8 text-center text-sm text-muted-foreground">
+        By clicking continue, you agree to our
+        <br />
+        <Link
+          href="/terms"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link
+          href="/privacy"
+          className="underline underline-offset-4 hover:text-primary"
+        >
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </div>
   );
 }

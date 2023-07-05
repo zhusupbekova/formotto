@@ -1,11 +1,10 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { compare } from "bcrypt";
 import { prisma } from "@/base/prisma";
+
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import EmailProvider from "next-auth/providers/email";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import EmailProvider from "next-auth/providers/email";
-
-import { compare } from "bcrypt";
-
 import NextAuth, { getServerSession, NextAuthOptions } from "next-auth";
 
 const VERCEL_DEPLOYMENT = !!process.env.VERCEL_URL;

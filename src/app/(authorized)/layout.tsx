@@ -1,10 +1,12 @@
-import { Inter } from "next/font/google";
-import { siteConfig } from "@/config/site";
-import { SiteHeader } from "@/components/layout/header";
 import { Metadata } from "next";
-import { SiteFooter } from "@/components/layout/footer";
-import { getSession } from "@/base/authOptions";
 import { redirect } from "next/navigation";
+import { Inter } from "next/font/google";
+
+import { siteConfig } from "@/config/site";
+import { getSession } from "@/base/authOptions";
+
+import { SiteHeader } from "@/components/layout/header";
+import { SiteFooter } from "@/components/layout/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 

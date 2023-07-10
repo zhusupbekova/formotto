@@ -12,3 +12,5 @@ export type UnwrapPromise<T> = T extends Promise<infer U> ? U : T;
 export type ServiceType<S extends (...args: any) => any> = UnwrapPromise<
   ReturnType<S>
 >;
+
+export type SearchParameterTypes = "page" | "perPage" | "search";

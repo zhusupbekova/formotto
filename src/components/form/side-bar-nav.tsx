@@ -22,7 +22,7 @@ export function SidebarNav({
   ...props
 }: SidebarNavProps) {
   const pathname = usePathname();
-  console.log(current, items);
+
   return (
     <nav
       className={cn(

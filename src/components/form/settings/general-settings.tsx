@@ -44,11 +44,11 @@ export function GeneralSettingsForm({ formId }: { formId: string }) {
     data: formData,
     error,
     isLoading,
-  } = useSWR<{ form: IForm }>(`/api/forms?formId=${formId}`, fetcher);
+  } = useSWR<{ form: IForm }>(`/api/forms/${formId}`, fetcher);
   const { trigger: triggerUpdate, isMutating: isMutatingUpdate } =
-    useSWRMutation(`/api/forms?formId=${formId}`, poster);
+    useSWRMutation(`/api/forms/${formId}`, poster);
   const { trigger: triggerDelete, isMutating: isMutatingDelete } =
-    useSWRMutation(`/api/forms?formId=${formId}`, deleter);
+    useSWRMutation(`/api/forms/${formId}`, deleter);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -159,14 +159,15 @@ export function GeneralSettingsForm({ formId }: { formId: string }) {
 
   async function onSubmit(values: formValues) {
     try {
-      const emails = values.emails ? values.emails?.trim().split(", ") : [];
+      const emails = values.emails
+        ? values.emails?.split(",").forEach((em) => em.trim())
+        : [];
       const formData = await triggerUpdate({
         name: values.name,
         redirect_url: values.redirect_url,
         emails,
       });
       toast.success("Form updated successfully");
-      console.log({ formData });
       // router.push(`/dashboard`);
       //
     } catch (err) {

@@ -123,13 +123,15 @@ export function NewForm() {
 
   async function onSubmit(values: formValues) {
     try {
-      const emails = values.emails ? values.emails?.trim().split(", ") : [];
+      const emails = values.emails
+        ? values.emails?.split(",").forEach((em) => em.trim())
+        : [];
       const formData = await trigger({
         name: values.name,
         redirect_url: values.redirect_url,
         emails,
       });
-      console.log({ formData });
+
       router.push(`/dashboard`);
       //
     } catch (err) {

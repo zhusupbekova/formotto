@@ -21,7 +21,6 @@ export function FormsList() {
     fetcher
   );
 
-  console.log(data);
   return (
     <div className="w-full flex flex-col space-y-6 pt-12 items-center">
       {data &&

@@ -42,7 +42,7 @@ export function FormCard({ formItem }: { formItem: IForm }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { trigger, isMutating } = useSWRMutation(
-    `/api/forms?formId=${formItem.id}`,
+    `/api/forms/${formItem.id}`,
     deleter
   );
   const { mutate } = useSWRConfig();
@@ -52,7 +52,7 @@ export function FormCard({ formItem }: { formItem: IForm }) {
   return (
     <Card className="relative w-full flex justify-between">
       <CardHeader>
-        <Link href={`/form/view?id=${formItem.id}`} className="cursor-pointer">
+        <Link href={`/form/${formItem.id}`} className="cursor-pointer">
           <CardTitle>{formItem.name}</CardTitle>
         </Link>
         <CardDescription className="flex items-center space-x-2">
@@ -117,13 +117,10 @@ export function FormCard({ formItem }: { formItem: IForm }) {
     try {
       e.preventDefault();
       setLoading(true);
-      console.log("deleting");
 
       await trigger();
-      console.log("getting rest");
 
       await mutate("/api/forms");
-      console.log("closings");
       setLoading(false);
       return setOpen(false);
     } catch (err) {

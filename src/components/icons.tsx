@@ -34,6 +34,9 @@ import {
   PlusCircle,
   Settings2,
   Calendar,
+  ChevronsLeft,
+  ChevronsRight,
+  Search,
 } from "lucide-react";
 
 export const Icons = {
@@ -70,6 +73,8 @@ export const Icons = {
   spinner: Loader2,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
+  chevronsLeft: ChevronsLeft,
+  chevronsRight: ChevronsRight,
   trash: Trash2,
   post: FileText,
   page: File,
@@ -98,6 +103,7 @@ export const Icons = {
   arrowDown: ArrowDown,
   eyeOff: EyeOff,
   plusCircle: PlusCircle,
+  search: Search,
   gitHub: (props: LucideProps) => (
     <svg viewBox="0 0 438.549 438.549" {...props}>
       <path

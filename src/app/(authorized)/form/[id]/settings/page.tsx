@@ -13,14 +13,14 @@ export const metadata: Metadata = {
   description: "Advanced form example using react-hook-form and Zod.",
 };
 
-export default function FormSettingsPage({ searchParams }) {
+export default function FormSettingsPage({ params }) {
   return (
     <>
       <div className="hidden space-y-6 p-10 pb-16 md:block">
         <div className="space-y-0.5">
           <div className="flex items-center">
             <Link
-              href={`/form/view?id=${searchParams.id}`}
+              href={`/form/${params.id}`}
               className={cn(buttonVariants({ variant: "link" }), "-ml-4 -mb-1")}
             >
               <Icons.chevronLeft className="h-6 w-6" />
@@ -32,7 +32,7 @@ export default function FormSettingsPage({ searchParams }) {
           </p>
         </div>
         <Separator className="my-6" />
-        <FormSettings formId={searchParams.id} />
+        <FormSettings formId={params.id} />
       </div>
     </>
   );

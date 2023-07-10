@@ -10,7 +10,7 @@ interface RequestContext {
 export async function POST(request: NextRequest, ctx: RequestContext) {
   const formId = ctx.params.id;
   const formData = await request.json();
-  console.log(formData, formId);
+
   try {
     const submission = await prisma.submission.create({
       data: {
